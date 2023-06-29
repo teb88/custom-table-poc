@@ -1,20 +1,28 @@
+import Table from './components/Table';
+import useRequest from './hooks/useRequest';
+import { Column, DataSource } from './models/table';
+import { getProducts } from './services/products/products';
+
+const columns: Column[] = [
+  { dataKey: 'title', label: 'Product' },
+  { dataKey: 'description', label: 'Description' },
+  { dataKey: 'price', label: 'Price' },
+  { dataKey: 'rating', label: 'Rating' },
+];
+
 function App() {
+  const { data, error, isFetching } = useRequest(getProducts);
+
   return (
     <div className="App" role="main">
-      <article className="App-article">
-        <img src={"/bunlogo.svg"} className="App-logo" alt="logo" />
-        <div style={{ height: "30px" }}></div>
-        <h3>Welcome to Bun!</h3>
-        <div style={{ height: "10px" }}></div>
-        <a
-          className="App-link"
-          href="https://bun.sh/docs"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Read the docs →
-        </a>
-      </article>
+      {isFetching ? (
+        <h1>Retrieving data...</h1>
+      ) : (
+        <Table
+          columns={columns}
+          data={data?.products as unknown as DataSource[]}
+        />
+      )}
     </div>
   );
 }
